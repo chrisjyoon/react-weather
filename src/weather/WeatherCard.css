@@ -1,0 +1,100 @@
+.weatherCard {
+  position: fixed;
+  background-color: #ffffff;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 10px 0 0 #a4a4a4;
+  border-radius: 20px;
+  width: 35%;
+  height: 52%;
+  min-width: 360px;
+  min-height: 480px;
+}
+.active {
+  left: 50%;
+  top: 50%;
+  height: 75%;
+  transform: translate(-50%, -50%);
+}
+.prev {
+  left: 0%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.next {
+  right: 0%;
+  top: 50%;
+  transform: translate(50%, -50%);
+}
+.contents {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+}
+.header {
+  display: flex;
+  align-self: start;
+  flex-direction: column;
+  padding-top: 20px;
+  flex-grow: 1;
+}
+.day {
+  display: flex;
+  font-size: 68pt;
+}
+.date {
+  display: flex;
+  font-size: 26pt;
+}
+.main {
+  display: flex;
+  font-size: 34pt;
+  flex-grow: 1;
+}
+.iconAndTemp {
+  display: flex;
+  flex-grow: 2;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.icon {
+  display: flex;
+  width: 140px;
+  height: 140px;
+}
+.temp {
+  display: flex;
+  font-size: 76pt;
+  text-align: right;
+}
+.tempMinMax {
+  display: flex;
+  flex-direction: column;
+  font-size: 66pt;
+}
+.max {
+  display: flex;
+  color:crimson;
+}
+.min {
+  display: flex;
+  color:cyan;
+}
+.aciveFooter {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.others {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22pt;
+}
+.location {
+  display: flex;
+  font-size: 24pt;
+  margin-bottom: 10px;
+}
