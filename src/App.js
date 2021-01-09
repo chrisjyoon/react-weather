@@ -23,6 +23,12 @@ function App() {
   useEventListener('keyDown', handlers.keyDownHandler);
   useEffect(() => {
     document.body.style.backgroundColor = uiState.darkMode ? '#222222' : '#cccccc';
+    const guideText = document.getElementById('guide');
+    if (uiState.step === 1 && guideText !== null) {
+      setTimeout(() => {
+        guideText.className = 'guideHide';
+      }, 7000);
+    }
   });
 
   let header = composeHeader(uiState, handlers);
@@ -30,10 +36,20 @@ function App() {
   let weathers = composeWeather(uiState, weatherState, handlers);
 
   return (
-    <div className={`App${uiState.darkMode ? 'Dark' : ''} stage-${uiState.step}`}>
+    <div
+      className={`App${uiState.darkMode ? 'Dark' : ''} stage-${uiState.step}`}
+    >
       {header}
       {location}
       {weathers}
+      {uiState.step === 1 ? (
+        <div>
+          <div className="filterLeft"></div>
+          <div className="filterRight"></div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 }
@@ -135,15 +151,15 @@ function composeHeader(uiState, handlers) {
       <h1>Welcome to Weather widget</h1>
     </div>
   ) : (
-    <div className="headerWidget">
-      <div className="headerLeft">
+    <div className="headerToolbar">
+      <div className="headerMenu">
         <button className="btnHome" onClick={handlers.goHome}>Go Home</button>
         <label className="container">Dark Mode
           <input type="checkbox" checked={uiState.darkMode} onChange={handlers.goDark}/>
           <span className="checkmark"></span>
         </label>
       </div>
-      <p>You can navigate by arrow key on your keyboard or click the weather card</p>
+      <p id="guide" className="guide">You can navigate by arrow key on your keyboard or click the weather card</p>
     </div>
   );
 }

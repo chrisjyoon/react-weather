@@ -46,14 +46,13 @@
   vertical-align: bottom;
 }
 
-.headerWidget {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.headerToolbar {
+  position: fixed;
   padding: 5px;
+  width: 100%;
 }
 
-.headerLeft {
+.headerMenu {
   display: flex;
   align-items: center;
   padding: 10px;
@@ -71,6 +70,41 @@
 .btnHome:hover {
   background-color: #4CAF50;
   color: white;
+}
+
+.space {
+  flex-grow: 1;
+}
+
+@keyframes slide-in {
+  from {
+    right: -100%; 
+  }
+  to {
+    right: 5%;
+  }
+}
+@keyframes slide-out {
+  from {
+    right: 5%; 
+  }
+  to {
+    right: -100%;
+  }
+}
+.guide {
+  position: fixed;
+  overflow: hidden;
+  top: 15px;
+  right: 5%;
+  animation: slide-in 3s;
+}
+.guideHide {
+  position: fixed;
+  overflow: hidden;
+  top: 15px;
+  right: -100%;
+  animation: slide-out 3s;
 }
 
 /* custom checkbox container */
@@ -130,4 +164,18 @@
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+
+.filterLeft {
+  width: 5%;
+  height: 100%;
+  position: fixed;
+  background-image: linear-gradient(to left, rgba(0,0,0,0), rgba(0,0,0,0.3));
+}
+.filterRight {
+  width: 5%;
+  height: 100%;
+  right: 0px;
+  position: fixed;
+  background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.3));
 }
