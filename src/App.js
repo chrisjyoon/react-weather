@@ -102,7 +102,7 @@ const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
       getWeather(pos.latitude, pos.longitude);
     } catch (e) {
       console.warn(e.message);
-      alert('Could not retrieve your current location, please check you allowed location service for your browser');
+      alert('Could not retrieve your current location, please check you allowed location service for your browser and try again');
       setUiHandler('loading', 0);
     }
   }
