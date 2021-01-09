@@ -132,6 +132,11 @@ function useEventListener(eventName, handler, element = window) {
 }
 
 function composeHeader(uiState, handlers) {
+  if (uiState.step === 1) {
+    setTimeout(() => {
+      document.getElementById('guide').className = 'fadeOut';
+    }, 1000);
+  }
   return uiState.step === 0 ? (
     <div>
       <h1>Welcome to Weather widget</h1>
@@ -145,7 +150,7 @@ function composeHeader(uiState, handlers) {
           <span className="checkmark"></span>
         </label>
       </div>
-      <p>You can navigate by arrow key on your keyboard or click the weather card</p>
+      <p id="guide" className="fadeIn">You can navigate by arrow key on your keyboard or click the weather card</p>
     </div>
   );
 }

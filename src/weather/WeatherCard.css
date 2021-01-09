@@ -21,16 +21,22 @@
   top: 50%;
   height: 75%;
   transform: translate(-50%, -50%);
+  transition-property: all;
+  transition-duration: 0.5s;
 }
 .prev {
   left: 0%;
   top: 50%;
   transform: translate(-50%, -50%);
+  transition-property: all;
+  transition-duration: 0.5s;
 }
 .next {
   right: 0%;
   top: 50%;
   transform: translate(50%, -50%);
+  transition-property: all;
+  transition-duration: 0.5s;
 }
 .contents {
   display: flex;

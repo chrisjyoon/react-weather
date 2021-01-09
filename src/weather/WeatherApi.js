@@ -2,20 +2,27 @@ import axios from 'axios';
 
 const API_KEY = '6b4da5cd82fa02cd65f3c640c0b99380';
 export default class WeatherAPI {
-  static getTimeStr = (timestamp) => {
+  static getTimeStr = (timeZone, timestamp) => {
     const date = new Date(timestamp * 1000);
-    return new Intl.DateTimeFormat('en-AU', { timeStyle: 'short' }).format(date);
+    return new Intl.DateTimeFormat('en-AU', {
+      timeStyle: 'short',
+      timeZone,
+    }).format(date);
   }
-  static makeDateStr = (weatherData) => {
+  static makeDateStr = (timeZone, weatherData) => {
     weatherData.forEach((data, idx) => {
       const date = new Date(data.timestamp * 1000);
-      const dateStr = new Intl.DateTimeFormat('en-AU', { dateStyle: 'full' }).format(date);
+      const dateStr = new Intl.DateTimeFormat('en-AU', {
+        dateStyle: 'full',
+        timeZone,
+      }).format(date);
       [data.day, data.date] = dateStr.split(',');
       if (idx === 0) {
         // only current data shows time
-        data.date = `${data.date} ${new Intl.DateTimeFormat('en-AU', { timeStyle: 'short' }).format(date)}`;
+        data.date = `${data.date} ${new Intl.DateTimeFormat('en-AU', {
+          timeStyle: 'short',
+        }).format(date)}`;
       }
-      // data.others.sunrise = getTimeStr(data.others.sunrise); 
     })
   }
   static getWeather = async(lat, lon) => {
@@ -24,7 +31,6 @@ export default class WeatherAPI {
       const weatherData = await axios.get(
         `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&exclude=minutely,hourly&appid=${API_KEY}`
       );
-      console.log(weatherData);
       if (weatherData.status !== 200) {
         console.warn('Failed to get weahter data!');
         return [];
@@ -39,8 +45,8 @@ export default class WeatherAPI {
         },
         weather: weatherData.data.current.weather[0],
         others : {
-          sunrise: this.getTimeStr(weatherData.data.current.sunrise),
-          sunset: this.getTimeStr(weatherData.data.current.sunset),
+          sunrise: this.getTimeStr(weatherData.data.timezone, weatherData.data.current.sunrise),
+          sunset: this.getTimeStr(weatherData.data.timezone, weatherData.data.current.sunset),
           humidity: weatherData.data.current.humidity,
           windspeed: weatherData.data.current.wind_speed
         }
@@ -60,15 +66,15 @@ export default class WeatherAPI {
           },
           weather: data.weather[0],
           others : {
-            sunrise: this.getTimeStr(data.sunrise),
-            sunset: this.getTimeStr(data.sunset),
+            sunrise: this.getTimeStr(weatherData.data.timezone, data.sunrise),
+            sunset: this.getTimeStr(weatherData.data.timezone, data.sunset),
             humidity: data.humidity,
             windspeed: data.wind_speed
           }
         };
       });
       weatherCardData = weatherCardData.concat(forecast);
-      this.makeDateStr(weatherCardData);
+      this.makeDateStr(weatherData.data.timezone, weatherCardData);
       return weatherCardData;
     } catch (e) {
       console.warn(e.message);
