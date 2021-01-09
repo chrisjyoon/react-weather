@@ -42,16 +42,20 @@ function App() {
 
 const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
   const handlers = {};
-  const setUIHandler = (k, v, callback) => {
-    setUiState({
-      ...uiState,
-      [k]: v
+  const setUiHandler = (k, v) => {
+    setUiState(prevState => {
+      return {
+        ...prevState,
+        [k]: v
+      };
     });
   };
-  const setWeatherHandler = (k, v, callback) => {
-    setWeatherState({
-      ...weatherState,
-      [k]: v
+  const setWeatherHandler = (k, v) => {
+    setWeatherState(prevState => {
+      return {
+        ...prevState,
+        [k]: v
+      };
     });
   };
   handlers.goHome = () => {
@@ -68,24 +72,24 @@ const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
     window.google = undefined;
   }
   handlers.goDark = (checked) => {
-    setUIHandler('darkMode', !uiState.darkMode);
+    setUiHandler('darkMode', !uiState.darkMode);
   }
   handlers.useLocationHandler = (latitude, longitude, geoLoc) => {
     setWeatherHandler('currLoc', geoLoc);
-    setUIHandler('loading', 2);;
+    setUiHandler('loading', 2);;
     getWeather(latitude, longitude);
   }
   handlers.startWithCurrLoc = async() => {
     try {
       const [pos, geoLoc] = await Location.getCurrentLocation((loading) => {
-        setUIHandler('loading', loading);
+        setUiHandler('loading', loading);
       });
       setWeatherHandler('currLoc', geoLoc);
       getWeather(pos.latitude, pos.longitude);
     } catch (e) {
       console.warn(e.message);
       alert('Could not retrieve your current location, please check you allowed location service for your browser');
-      setUIHandler('loading', 0);
+      setUiHandler('loading', 0);
     }
   }
   const KEY_LEFT = 37;
@@ -112,7 +116,7 @@ const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
     try {
       const weatherData = await WeatherApi.getWeather(latitude, longitude);
       setWeatherHandler('weatherData', weatherData);
-      setUIHandler('step', 1);
+      setUiHandler('step', 1);
     } catch (e) {
       console.warn(e.message);
     }
