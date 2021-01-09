@@ -134,7 +134,7 @@ function useEventListener(eventName, handler, element = window) {
 function composeHeader(uiState, handlers) {
   return uiState.step === 0 ? (
     <div>
-      <h2>Welcome to Weather widget</h2>
+      <h1>Welcome to Weather widget</h1>
     </div>
   ) : (
     <div className="headerWidget">
