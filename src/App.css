@@ -131,13 +131,3 @@
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-.fadeIn {
-  visibility: visible;
-  opacity: 1;
-  transition: visibility 0s 2s, opacity 2s linear;
-}
-.fadeOut {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s 3s, opacity 3s linear;
-}

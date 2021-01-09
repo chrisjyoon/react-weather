@@ -10,11 +10,9 @@ export default class Location {
       const geocode = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc.latitude},${loc.longitude}&key=${GOOGLE_MAP_API_KEY}`
       )
-      console.log('geocode = ', geocode);
       const pluscode = geocode.data.plus_code
         ? geocode.data.plus_code
         : geocode.data.results[0].plus_code;
-      console.log('plus code = ', pluscode);
       const regex = /.+?\s(.+)/;
       const matches = pluscode.compound_code.match(regex);
       return matches ? matches[1] : geocode.data.results[0].formatted_address;
@@ -31,7 +29,6 @@ export default class Location {
       };
       startCallback(1);
       navigator.geolocation.getCurrentPosition(async (pos) => {
-        console.log('geo data => ', pos);
         startCallback(2);
         this.currLocation = {
           latitude: pos.coords.latitude,
@@ -56,7 +53,7 @@ const useGoogleMapAPI = (handler) => {
     script.async = true;
     document.body.appendChild(script);
     window.initMap = () => {
-      console.info('google map api loaded!', window.google);
+      console.info('google map api loaded!');
       const address = document.getElementById('address');
       const options = {
         types: ['(regions)']
@@ -67,8 +64,6 @@ const useGoogleMapAPI = (handler) => {
         const latitude = place.geometry.location.lat();
         const longitude = place.geometry.location.lng();
         handler(latitude, longitude, place.formatted_address);
-        console.log(place);
-        console.log(latitude, longitude, place.formatted_address);
       });
     };
   });

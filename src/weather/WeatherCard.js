@@ -2,7 +2,6 @@
 import './WeatherCard.css';
 
 const WeatherCard = (props) => {
-  console.log('props = ', props);
   // const active = isActive ? 'active' : 'none'; 
   const position =
     +props.index === props.currIdx
