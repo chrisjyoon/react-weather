@@ -6,24 +6,27 @@ import Location, { useGoogleMapAPI } from './location/Location';
 import WeatherApi from './weather/WeatherApi';
 import WeatherCard from './weather/WeatherCard';
 
-let weatherData = [];
-
 function App() {
   const [uiState, setUiState] = useState({
     step: 0,          // 0 : select location, 1 : weather cards
     loading: 0,       // 0 : not loading, 1 : fetching geolocation, 2 : fetching weather data
     darkMode: false   // dark mode
   });
-  const [currIdx, setCurrIdx] = useState(0);        // active day for showing weather card
-  const [currLoc, setCurrLoc] = useState('');       // current geo location
+  const [weatherState, setWeatherState] = useState({
+    currIdx: 0,   // active day for showing weather card
+    currLoc: '',  // current geo location
+    weatherData: []
+  });
 
-  const handlers = initHandlers(uiState, setUiState, setCurrIdx, setCurrLoc, currIdx);
+  console.log('!!! uiState = ', uiState);
+  console.log('!!! weatherState = ', weatherState);
+  const handlers = initHandlers(uiState, setUiState, weatherState, setWeatherState);
   useGoogleMapAPI(handlers.useLocationHandler);
   useEventListener('keyDown', handlers.keyDownHandler);
 
   let header = composeHeader(uiState, handlers);
-  let location = composeLocation(uiState, handlers.startWithCurrLoc, currLoc);
-  let weathers = composeWeather(uiState, currIdx, currLoc, setCurrIdx);
+  let location = composeLocation(uiState, handlers.startWithCurrLoc, weatherState.currLoc);
+  let weathers = composeWeather(uiState, weatherState, handlers);
 
   return (
     <div className={`App stage-${uiState.step}`}>
@@ -34,61 +37,78 @@ function App() {
   );
 }
 
-const initHandlers = (uiState, setUiState, setCurrIdx, setCurrLoc, currIdx) => {
+const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
   const handlers = {};
-  const changeHandler = (k, v, callback) => {
+  const setUIHandler = (k, v, callback) => {
     setUiState({
       ...uiState,
       [k]: v
-    }, callback);
+    });
+  };
+  const setWeatherHandler = (k, v, callback) => {
+    setWeatherState({
+      ...weatherState,
+      [k]: v
+    });
   };
   handlers.goHome = () => {
     setUiState({
       step: 0,
       loading: 0
     });
-    console.log('uiState = ', uiState);
-    setCurrIdx(0);
-    setCurrLoc('');
+    setWeatherState({
+      currIdx: 0,
+      currLoc: '',
+      weatherData: [],
+    });
     window.google = undefined;
   }
   handlers.goDark = (checked) => {
     console.log('going dark', checked);
   }
   handlers.useLocationHandler = (latitude, longitude, geoLoc) => {
-    setCurrLoc(geoLoc);
-    changeHandler('loading', 2);;
+    setWeatherHandler('currLoc', geoLoc);
+    setUIHandler('loading', 2);;
     getWeather(latitude, longitude);
   }
   handlers.startWithCurrLoc = async() => {
     try {
       const [pos, geoLoc] = await Location.getCurrentLocation((loading) => {
-        changeHandler('loading', loading);
+        setUIHandler('loading', loading);
       });
-      setCurrLoc(geoLoc);
+      setWeatherHandler('currLoc', geoLoc);
       getWeather(pos.latitude, pos.longitude);
     } catch (e) {
       console.warn(e.message);
       alert('Could not retrieve your current location, please check you allowed location service for your browser');
-      changeHandler('loading', 0);
+      setUIHandler('loading', 0);
     }
   }
   const KEY_LEFT = 37;
   const KEY_RIGHT = 39;
   handlers.keyDownHandler = (evt) => {
-    if (evt.keyCode === KEY_RIGHT && currIdx < weatherData.length - 1) {
-      setCurrIdx(currIdx + 1);
+    if (evt.keyCode === KEY_RIGHT && weatherState.currIdx < weatherState.weatherData.length - 1) {
+      setWeatherHandler('currIdx', weatherState.currIdx + 1);
       return;
     }
-    if (evt.keyCode === KEY_LEFT && currIdx > 0) {
-      setCurrIdx(currIdx - 1);
+    if (evt.keyCode === KEY_LEFT && weatherState.currIdx > 0) {
+      setWeatherHandler('currIdx', weatherState.currIdx - 1);
+    }
+  }
+  handlers.navHandler = (pos) => {
+    if (pos === 'next' && weatherState.currIdx < weatherState.weatherData.length - 1) {
+      setWeatherHandler('currIdx', weatherState.currIdx + 1);
+      return;
+    }
+    if (pos === 'prev' && weatherState.currIdx > 0) {
+      setWeatherHandler('currIdx', weatherState.currIdx - 1);
     }
   }
   const getWeather = async (latitude, longitude) => {
     try {
-      weatherData = await WeatherApi.getWeather(latitude, longitude);
-      console.log(weatherData);
-      changeHandler('step', 1);
+      const weatherData = await WeatherApi.getWeather(latitude, longitude);
+      setWeatherHandler('weatherData', weatherData);
+      setUIHandler('step', 1);
     } catch (e) {
       console.warn(e.message);
     }
@@ -162,22 +182,14 @@ function composeLocation(uiState, startWithCurrLoc, currLoc) {
   }
   return location;
 }
-function composeWeather(uiState, currIdx, currLoc, setCurrIdx) {
+function composeWeather(uiState, weatherState, handler) {
   const MAX_CARD_NUM = 3; // number of cards to display
   // initially we show two cards (today, tomorrow),
   // and after that, we show three cards (yesterday, today, tomorrow)
-  let startIdx = currIdx === 0 ? 0 : currIdx - 1;
-  let cards = weatherData.slice(startIdx, currIdx === 0 ? 2 : startIdx + MAX_CARD_NUM);
+  let startIdx = weatherState.currIdx === 0 ? 0 : weatherState.currIdx - 1;
+  let cards = weatherState.weatherData.slice(startIdx, weatherState.currIdx === 0 ? 2 : startIdx + MAX_CARD_NUM);
   console.log('cards = ', cards);
-  const navHandler = (pos) => {
-    if (pos === 'next' && currIdx < weatherData.length - 1) {
-      setCurrIdx(currIdx + 1);
-      return;
-    }
-    if (pos === 'prev' && currIdx > 0) {
-      setCurrIdx(currIdx - 1);
-    }
-  }
+
 
   return uiState.step === 0 ? null : (
     <div>
@@ -185,15 +197,15 @@ function composeWeather(uiState, currIdx, currLoc, setCurrIdx) {
         return (
           <WeatherCard
             index={weather.index}
-            currIdx={currIdx}
-            currLoc={currLoc}
+            currIdx={weatherState.currIdx}
+            currLoc={weatherState.currLoc}
             day={weather.day}
             date={weather.date}
             weather={weather.weather}
             temp={weather.temp}
             others={weather.others}
             key={weather.key}
-            navHandler={navHandler}
+            navHandler={handler.navHandler}
           ></WeatherCard>
         );
       })}
