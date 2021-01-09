@@ -47,11 +47,11 @@
 }
 .day {
   display: flex;
-  font-size: 68pt;
+  font-size: calc(1em + 5vw);
 }
 .date {
   display: flex;
-  font-size: 26pt;
+  font-size: calc(1em + 1.2vw);
 }
 .main {
   display: flex;
@@ -97,7 +97,7 @@
 .others {
   display: flex;
   justify-content: space-between;
-  font-size: 22pt;
+  font-size: calc(0.7em + 1vw);
 }
 .location {
   display: flex;

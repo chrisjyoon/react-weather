@@ -10,7 +10,7 @@ const WeatherCard = (props) => {
       : +props.index < props.currIdx
       ? 'prev'
       : 'next';
-  const iconUrl = `http://openweathermap.org/img/wn/${props.weather.icon}@2x.png`;
+  const iconUrl = `https://openweathermap.org/img/wn/${props.weather.icon}@2x.png`;
 
   return (
     <div
