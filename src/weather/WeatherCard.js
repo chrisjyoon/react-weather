@@ -14,7 +14,7 @@ const WeatherCard = (props) => {
 
   return (
     <div
-      className={`weatherCard ${position}`}
+      className={`weatherCard${props.darkMode ? 'Dark' : ''} ${position}`}
       onClick={(evt) => {
         props.navHandler(position);
       }}

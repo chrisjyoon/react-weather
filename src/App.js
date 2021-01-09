@@ -23,13 +23,16 @@ function App() {
   const handlers = initHandlers(uiState, setUiState, weatherState, setWeatherState);
   useGoogleMapAPI(handlers.useLocationHandler);
   useEventListener('keyDown', handlers.keyDownHandler);
+  useEffect(() => {
+    document.body.style.backgroundColor = uiState.darkMode ? '#222222' : '#cccccc';
+  });
 
   let header = composeHeader(uiState, handlers);
   let location = composeLocation(uiState, handlers.startWithCurrLoc, weatherState.currLoc);
   let weathers = composeWeather(uiState, weatherState, handlers);
 
   return (
-    <div className={`App stage-${uiState.step}`}>
+    <div className={`App${uiState.darkMode ? 'Dark' : ''} stage-${uiState.step}`}>
       {header}
       {location}
       {weathers}
@@ -54,7 +57,8 @@ const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
   handlers.goHome = () => {
     setUiState({
       step: 0,
-      loading: 0
+      loading: 0,
+      darkMode: uiState.darkMode
     });
     setWeatherState({
       currIdx: 0,
@@ -64,7 +68,7 @@ const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
     window.google = undefined;
   }
   handlers.goDark = (checked) => {
-    console.log('going dark', checked);
+    setUIHandler('darkMode', !uiState.darkMode);
   }
   handlers.useLocationHandler = (latitude, longitude, geoLoc) => {
     setWeatherHandler('currLoc', geoLoc);
@@ -154,13 +158,13 @@ function composeLocation(uiState, startWithCurrLoc, currLoc) {
               type="text"
               placeholder="Type name of the city"
             ></input>
-            &nbsp;OR&nbsp;
+            &nbsp;<span>OR</span>&nbsp;
             <button className="btnStart" onClick={startWithCurrLoc}>
               Use Current Location
             </button>
             <img
               className="googleLogo"
-              src="/powered_by_google.png"
+              src={`/${uiState.darkMode ? 'powered_by_google_dark.png' : 'powered_by_google.png'}`}
               alt="powered by google logo"
             ></img>
           </div>
@@ -188,8 +192,6 @@ function composeWeather(uiState, weatherState, handler) {
   // and after that, we show three cards (yesterday, today, tomorrow)
   let startIdx = weatherState.currIdx === 0 ? 0 : weatherState.currIdx - 1;
   let cards = weatherState.weatherData.slice(startIdx, weatherState.currIdx === 0 ? 2 : startIdx + MAX_CARD_NUM);
-  console.log('cards = ', cards);
-
 
   return uiState.step === 0 ? null : (
     <div>
@@ -206,6 +208,7 @@ function composeWeather(uiState, weatherState, handler) {
             others={weather.others}
             key={weather.key}
             navHandler={handler.navHandler}
+            darkMode={uiState.darkMode}
           ></WeatherCard>
         );
       })}

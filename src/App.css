@@ -1,5 +1,11 @@
 .App {
   background-color: #cccccc;
+  color: #222222;
+  text-align: center;
+}
+.AppDark {
+  background-color: #222222;
+  color: #cccccc;
   text-align: center;
 }
 
@@ -43,6 +49,7 @@
 .headerWidget {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 5px;
 }
 
@@ -57,8 +64,8 @@
   color: black; 
   border: 2px solid #4CAF50;
   text-decoration: none;
-  display: inline-block;
   cursor: pointer;
+  padding: 16px 32px;
 }
 
 .btnHome:hover {
@@ -68,12 +75,13 @@
 
 /* custom checkbox container */
 .container {
-  display: block;
+  display: flex;
   position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
+  padding-left: 32px;
+  margin-left: 20px;
+  margin-bottom: 4px;
   cursor: pointer;
-  font-size: 22px;
+  font-size: 12pt;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -93,8 +101,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 25px;
-  width: 25px;
+  height: 22px;
+  width: 22px;
   background-color: #eee;
 }
 
