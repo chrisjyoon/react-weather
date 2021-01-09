@@ -9,21 +9,24 @@ import WeatherCard from './weather/WeatherCard';
 let weatherData = [];
 
 function App() {
-  const [stage, setStage] = useState(0); // 0 : select location, 1 : weather cards
-  const [loading, setLoading] = useState(0); // 0 : not loading, 1 : fetching geolocation, 2 : fetching weather data
-  const [currIdx, setCurrIdx] = useState(0); // active day for showing weather card
-  const [currLoc, setCurrLoc] = useState(''); // current geo location
+  const [uiState, setUiState] = useState({
+    step: 0,          // 0 : select location, 1 : weather cards
+    loading: 0,       // 0 : not loading, 1 : fetching geolocation, 2 : fetching weather data
+    darkMode: false   // dark mode
+  });
+  const [currIdx, setCurrIdx] = useState(0);        // active day for showing weather card
+  const [currLoc, setCurrLoc] = useState('');       // current geo location
 
-  const handlers = initHandlers(setStage, setLoading, setCurrIdx, setCurrLoc, currIdx);
+  const handlers = initHandlers(uiState, setUiState, setCurrIdx, setCurrLoc, currIdx);
   useGoogleMapAPI(handlers.useLocationHandler);
   useEventListener('keyDown', handlers.keyDownHandler);
 
-  let header = composeHeader(stage, handlers);
-  let location = composeLocation(stage, loading, handlers.startWithCurrLoc, currLoc);
-  let weathers = composeWeather(stage, currIdx, currLoc, setCurrIdx);
+  let header = composeHeader(uiState, handlers);
+  let location = composeLocation(uiState, handlers.startWithCurrLoc, currLoc);
+  let weathers = composeWeather(uiState, currIdx, currLoc, setCurrIdx);
 
   return (
-    <div className={`App stage-${stage}`}>
+    <div className={`App stage-${uiState.step}`}>
       {header}
       {location}
       {weathers}
@@ -31,29 +34,43 @@ function App() {
   );
 }
 
-const initHandlers = (setStage, setLoading, setCurrIdx, setCurrLoc, currIdx) => {
+const initHandlers = (uiState, setUiState, setCurrIdx, setCurrLoc, currIdx) => {
   const handlers = {};
+  const changeHandler = (k, v, callback) => {
+    setUiState({
+      ...uiState,
+      [k]: v
+    }, callback);
+  };
   handlers.goHome = () => {
-    setStage(0);
-    setLoading(0);
+    setUiState({
+      step: 0,
+      loading: 0
+    });
+    console.log('uiState = ', uiState);
     setCurrIdx(0);
     setCurrLoc('');
     window.google = undefined;
   }
+  handlers.goDark = (checked) => {
+    console.log('going dark', checked);
+  }
   handlers.useLocationHandler = (latitude, longitude, geoLoc) => {
     setCurrLoc(geoLoc);
-    setLoading(2);
+    changeHandler('loading', 2);;
     getWeather(latitude, longitude);
   }
   handlers.startWithCurrLoc = async() => {
     try {
-      const [pos, geoLoc] = await Location.getCurrentLocation(setLoading);
+      const [pos, geoLoc] = await Location.getCurrentLocation((loading) => {
+        changeHandler('loading', loading);
+      });
       setCurrLoc(geoLoc);
       getWeather(pos.latitude, pos.longitude);
     } catch (e) {
       console.warn(e.message);
       alert('Could not retrieve your current location, please check you allowed location service for your browser');
-      setLoading(0);
+      changeHandler('loading', 0);
     }
   }
   const KEY_LEFT = 37;
@@ -71,7 +88,7 @@ const initHandlers = (setStage, setLoading, setCurrIdx, setCurrLoc, currIdx) => 
     try {
       weatherData = await WeatherApi.getWeather(latitude, longitude);
       console.log(weatherData);
-      setStage(1);
+      changeHandler('step', 1);
     } catch (e) {
       console.warn(e.message);
     }
@@ -86,22 +103,28 @@ function useEventListener(eventName, handler, element = window) {
   }, [eventName, handler, element]);
 }
 
-function composeHeader(stage, handlers) {
-  return stage === 0 ? (
+function composeHeader(uiState, handlers) {
+  return uiState.step === 0 ? (
     <div>
       <h2>Welcome to Weather widget</h2>
     </div>
   ) : (
     <div className="headerWidget">
-      <button className="btnHome" onClick={handlers.goHome}>Go Home</button>
+      <div className="headerLeft">
+        <button className="btnHome" onClick={handlers.goHome}>Go Home</button>
+        <label className="container">Dark Mode
+          <input type="checkbox" checked={uiState.darkMode} onChange={handlers.goDark}/>
+          <span className="checkmark"></span>
+        </label>
+      </div>
       <p>You can navigate by arrow key on your keyboard or click the weather card</p>
     </div>
   );
 }
-function composeLocation(stage, loading, startWithCurrLoc, currLoc) {
+function composeLocation(uiState, startWithCurrLoc, currLoc) {
   let location = null;
-  if (stage === 0) {
-    switch (loading) {
+  if (uiState.step === 0) {
+    switch (uiState.loading) {
       case 0:
         location = (
           <div>
@@ -139,7 +162,7 @@ function composeLocation(stage, loading, startWithCurrLoc, currLoc) {
   }
   return location;
 }
-function composeWeather(stage, currIdx, currLoc, setCurrIdx) {
+function composeWeather(uiState, currIdx, currLoc, setCurrIdx) {
   const MAX_CARD_NUM = 3; // number of cards to display
   // initially we show two cards (today, tomorrow),
   // and after that, we show three cards (yesterday, today, tomorrow)
@@ -156,7 +179,7 @@ function composeWeather(stage, currIdx, currLoc, setCurrIdx) {
     }
   }
 
-  return stage === 0 ? null : (
+  return uiState.step === 0 ? null : (
     <div>
       {cards.map((weather) => {
         return (
