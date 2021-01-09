@@ -13,9 +13,9 @@ function App() {
     darkMode: false   // dark mode
   });
   const [weatherState, setWeatherState] = useState({
-    currIdx: 0,   // active day for showing weather card
-    currLoc: '',  // current geo location
-    weatherData: []
+    currIdx: 0,     // active day for showing weather card
+    currLoc: '',    // current geo location
+    weatherData: [] // current weather + 7 days forecast from openweathermap.org
   });
 
   const handlers = initHandlers(uiState, setUiState, weatherState, setWeatherState);
@@ -54,6 +54,7 @@ function App() {
   );
 }
 
+// initialise handlers for ui, location, weahter data event
 const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
   const handlers = {};
   const setUiHandler = (k, v) => {
@@ -137,14 +138,14 @@ const initHandlers = (uiState, setUiState, weatherState, setWeatherState) => {
   }
   return handlers;
 }
-
+// register/unregister the keydown event handler by using effect hook
 function useEventListener(eventName, handler, element = window) {
   useEffect(() => {
     element.addEventListener('keydown', handler);
     return () => element.removeEventListener('keydown', handler);
   }, [eventName, handler, element]);
 }
-
+// compose header toolbar as step changes
 function composeHeader(uiState, handlers) {
   return uiState.step === 0 ? (
     <div>
@@ -163,6 +164,7 @@ function composeHeader(uiState, handlers) {
     </div>
   );
 }
+// compose location selection part on initial sreen (step 0)
 function composeLocation(uiState, startWithCurrLoc, currLoc) {
   let location = null;
   if (uiState.step === 0) {
@@ -204,10 +206,11 @@ function composeLocation(uiState, startWithCurrLoc, currLoc) {
   }
   return location;
 }
+// compose weather cards contents (step 1)
 function composeWeather(uiState, weatherState, handler) {
   const MAX_CARD_NUM = 3; // number of cards to display
   // initially we show two cards (today, tomorrow),
-  // and after that, we show three cards (yesterday, today, tomorrow)
+  // and after that, as user navigates we show three cards (yesterday, today, tomorrow) until the end of the data
   let startIdx = weatherState.currIdx === 0 ? 0 : weatherState.currIdx - 1;
   let cards = weatherState.weatherData.slice(startIdx, weatherState.currIdx === 0 ? 2 : startIdx + MAX_CARD_NUM);
 

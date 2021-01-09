@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import axios from 'axios';
 
 const GOOGLE_MAP_API_KEY = 'AIzaSyDWGK53VdlIOMpM5FUG2557fVc9krJ6eSs';
-
+// class for using place autocomplete, geocode from google and navigator.geolocation api.
 export default class Location {
   currLocation;
+  // with given latitude and longitude, fetch the geocode data by using google map api
   static getGeoCode = async (loc) => {
     try {
       const geocode = await axios.get(
@@ -20,6 +21,7 @@ export default class Location {
       console.warn(e);
     }
   };
+  // get browser's current location. (user should allow location service in both device and browser)
   static getCurrentLocation = (startCallback) => {
     return new Promise((resolve, reject) => {
       const options = {
@@ -43,7 +45,7 @@ export default class Location {
     });
   };
 }
-
+// apply places autocomplete by using google map place api
 const useGoogleMapAPI = (handler) => {
   useEffect(() => {
     if (window.google) return;
