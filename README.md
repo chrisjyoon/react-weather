@@ -18,6 +18,9 @@ And you should allow the location service on both your device and browser.
 
 ![location service](https://raw.githubusercontent.com/chrisjyoon/react-weather/master/screenshots/location.png)
 
+### TODO
+I need to make it mobile friendly
 ### Screenshots
 ![screenshot home](https://raw.githubusercontent.com/chrisjyoon/react-weather/master/screenshots/home.png)
 ![screenshot weather main](https://raw.githubusercontent.com/chrisjyoon/react-weather/master/screenshots/weather_main.png)
+
