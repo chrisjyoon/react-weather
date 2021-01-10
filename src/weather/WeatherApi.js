@@ -22,6 +22,7 @@ export default class WeatherAPI {
         // only current data shows time
         data.date = `${data.date} ${new Intl.DateTimeFormat('en-AU', {
           timeStyle: 'short',
+          timeZone,
         }).format(date)}`;
       }
     })
