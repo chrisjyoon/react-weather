@@ -27,7 +27,14 @@ const WeatherCard = (props) => {
         <div className="iconAndTemp">
           <img className="icon" src={iconUrl} alt="weahter icon"></img>
           {props.index === 0 ? (
-            <div className="temp">{props.temp.curr}&#8451;</div>
+            <div>
+              <div className="temp">{props.temp.curr}&#8451;</div>
+              <div className="tempTodayMinMax">
+                <span className={`max${props.darkMode ? 'Dark' : ''}`}>{props.temp.max}&#8451;</span>
+                &nbsp;
+                <span className={`min${props.darkMode ? 'Dark' : ''}`}>{props.temp.min}&#8451;</span>
+              </div>
+            </div>
           ) : position === 'next' ? ''
             : (
             <div className="tempMinMax">

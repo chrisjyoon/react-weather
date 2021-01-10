@@ -43,7 +43,9 @@ export default class WeatherAPI {
         key: weatherData.data.current.dt.toString(),
         timestamp: weatherData.data.current.dt,
         temp: {
-          curr: Math.round(weatherData.data.current.temp)
+          curr: Math.round(weatherData.data.current.temp),
+          max: Math.round(weatherData.data.daily[0].temp.max),
+          min: Math.round(weatherData.data.daily[0].temp.min),
         },
         weather: weatherData.data.current.weather[0],
         others : {

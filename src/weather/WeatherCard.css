@@ -82,6 +82,11 @@
   text-align: right;
   font-size: calc(2em + 5vw);
 }
+.tempTodayMinMax {
+  display: flex;
+  justify-content: flex-end;
+  font-size: calc(1em + 2vw);
+}
 .tempMinMax {
   display: flex;
   flex-direction: column;
