@@ -4,8 +4,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
-
+In the project directory,
+### `npm install` (first time only)
+then,
 ### `npm start` or `yarn start`
 
 Open [https://localhost:3000](https://localhost:3000) to view it in the browser.
@@ -18,9 +19,9 @@ And you should allow the location service on both your device and browser.
 
 ![location service](https://raw.githubusercontent.com/chrisjyoon/react-weather/master/screenshots/location.png)
 
-### TODO
+## TODO
 I need to make it mobile friendly
-### Screenshots
+## Screenshots
 ![screenshot home](https://raw.githubusercontent.com/chrisjyoon/react-weather/master/screenshots/home.png)
 ![screenshot weather main](https://raw.githubusercontent.com/chrisjyoon/react-weather/master/screenshots/weather_main.png)
 

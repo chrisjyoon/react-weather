@@ -154,7 +154,7 @@ function composeHeader(uiState, handlers) {
   ) : (
     <div className="headerToolbar">
       <div className="headerMenu">
-        <button className="btnHome" onClick={handlers.goHome}>Go Home</button>
+        <button className="btnHome" onClick={handlers.goHome}>Home</button>
         <label className="container">Dark Mode
           <input type="checkbox" checked={uiState.darkMode} onChange={handlers.goDark}/>
           <span className="checkmark"></span>
