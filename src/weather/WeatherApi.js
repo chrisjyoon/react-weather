@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_KEY = 'your api key';
+const API_KEY = '6b4da5cd82fa02cd65f3c640c0b99380';
 // class for fetching weather data from openweathermap.org
 export default class WeatherAPI {
   static getTimeStr = (timeZone, timestamp) => {

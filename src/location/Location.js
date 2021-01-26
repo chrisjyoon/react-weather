@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import axios from 'axios';
 
-const GOOGLE_MAP_API_KEY = 'your api key';
+const GOOGLE_MAP_API_KEY = 'AIzaSyDWGK53VdlIOMpM5FUG2557fVc9krJ6eSs';
 // class for using place autocomplete, geocode from google and navigator.geolocation api.
 export default class Location {
   currLocation;
